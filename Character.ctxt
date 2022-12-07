@@ -1,0 +1,17 @@
+#BlueJ class context
+comment0.target=Character
+comment1.params=
+comment1.target=Character()
+comment2.params=p_position\ p_rotation
+comment2.target=Character(Vector2,\ double)
+comment3.params=p_animation
+comment3.target=void\ setAnimation(Character.Animation)
+comment4.params=p_physics
+comment4.target=void\ setPhysics(Character.Physics)
+comment5.params=delta
+comment5.target=void\ runAnimation(double)
+comment6.params=delta
+comment6.target=void\ runPhysics(double)
+comment7.params=
+comment7.target=void\ act()
+numComments=8

@@ -1,0 +1,17 @@
+#BlueJ class context
+comment0.target=Node
+comment1.params=
+comment1.target=Node()
+comment2.params=
+comment2.target=void\ finalize()
+comment3.params=
+comment3.target=void\ removeFromSceneTree()
+comment4.params=propagate_child
+comment4.target=boolean\ addChildToSceneTree(boolean)
+comment5.params=index
+comment5.target=boolean\ addChildToSceneTree(int)
+comment6.params=index\ propagate_child
+comment6.target=boolean\ addChildToSceneTree(int,\ boolean)
+comment7.params=
+comment7.target=void\ act()
+numComments=8

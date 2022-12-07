@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.target=Player
+comment1.params=position\ rotation
+comment1.target=Player(Vector2,\ double)
+comment2.params=position\ rotation\ p_control
+comment2.target=Player(Vector2,\ double,\ Player.Control)
+comment3.params=
+comment3.target=void\ act()
+comment4.params=
+comment4.target=void\ updateMovementKeys()
+numComments=5
