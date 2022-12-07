@@ -8,23 +8,14 @@ public class Character extends Node
     private Physics physics = null;
     private Thread physThread = null;
     
-    //move to node
-    protected Vector2 position;
-    protected Vector2 rotation;
-    protected ArrayList<CollisionArea> ChildNodes;
-    
     Character() {
-        position = new Vector2(getX(), getY());
-        final double rad = Math.toRadians(getRotation());
-        rotation = new Vector2(Math.cos(rad), Math.sin(rad)); //check if sign is right
+        
     }
     Character(final Vector2 p_position, final double p_rotation) {
-        position = p_position;
-        setLocation((int)position.x, (int)position.y);
         
-        final double rad = Math.toRadians(p_rotation);
-        rotation = new Vector2(Math.cos(rad), Math.sin(rad));
-        setRotation((int)(p_rotation));
+    }
+    Character(final Vector2 p_position) {
+    
     }
     
     protected class Physics implements Runnable {
@@ -37,6 +28,24 @@ public class Character extends Node
     
     protected abstract class Animation implements Runnable {
         double delta = 0;
+        public class Sprite {
+            public GreenfootImage sprite = null;
+            public int frame = 0;
+            public int jumpToStateAtEnd = 0;
+            public Sprite(final GreenfootImage p_sprite, final int p_frame) {
+                sprite = p_sprite;
+                frame = p_frame;
+            }
+            public Sprite(final GreenfootImage p_sprite, final int p_frame, final int p_state) {
+                sprite = p_sprite;
+                frame = p_frame;
+                jumpToStateAtEnd = p_state;
+            }
+        };
+        //spriteSheet.get(X).get(Y) wherein X is the state and Y is the frame
+        protected ArrayList<ArrayList<Sprite>> spriteSheet = new ArrayList<ArrayList<Sprite>>();
+        protected int currentFrame = 0;
+        protected int currentState = 0;
         public void setDelta(final double p_delta) {
             delta = p_delta;
         }
@@ -86,5 +95,6 @@ public class Character extends Node
             delta = ((Arena)getWorld()).getTimeStep();
         runPhysics(delta);
         runAnimation(delta);
+        super.act();
     }
 }

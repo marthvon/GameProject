@@ -6,13 +6,61 @@ public class Node extends Actor
     private Node parent = null;
     private ArrayList<Node> childNodes = new ArrayList<Node>();
     private Transform transform;
+    private Transform globalTransformCache; 
     private boolean update_dirty = false;
     
     public Node() {
         super();
     }
+    public Node(final Vector2 p_position, final double p_rotation) {
+        super();
+    }
+    public Node(final Vector2 p_position) {
+        super();
+    }
+    
     protected void finalize() {
         removeFromSceneTree();
+    }
+    
+    public Transform getGlobalTransform() {
+        if(parent == null)
+            return new Transform(transform);
+        else if(update_dirty) {
+            globalTransformCache = parent.getGlobalTransform().multiplied(transform);
+            update_dirty = false;
+        }
+        return new Transform(globalTransformCache);
+    }
+    public void propagateDrawUpdate() {
+        update_dirty = true;
+        for(Node child : childNodes) {
+            if(getWorld() != child.getWorld())
+                continue;
+            child.propagateDrawUpdate();
+        }
+    }
+    
+    public void setPosition(final Vector2 pos) {
+        transform.setLocalPosition(pos);
+        propagateDrawUpdate();
+    }
+    public final Vector2 getPosition() {
+        return transform.getLocalPosition();
+    }
+    public void setScale(final Vector2 scale) {
+        transform.setScale(scale);
+        propagateDrawUpdate();
+    }
+    public final Vector2 getScale() {
+        return transform.getScale();
+    }
+    public void setRotation(final double radian) {
+        transform.setRotation(radian);
+        propagateDrawUpdate();
+    }
+    public double getRotationAngle() {
+        return transform.getRotation();
     }
     
     public void removeFromSceneTree() {
@@ -48,7 +96,16 @@ public class Node extends Actor
         return true;
     }
     
-    public void act() {
+    public void updateDraw() {
+        if(!update_dirty)
+            return;
+        getGlobalTransform();
+        //setLocation;
+        //setRotation;
+        update_dirty = false;
+    }
     
+    public void act() {
+        updateDraw();
     }
 }
