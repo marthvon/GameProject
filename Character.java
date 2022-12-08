@@ -64,7 +64,7 @@ public class Character extends Node
             ArrayList<Animation.Sprite> state = spriteSheet.get(currentState);
             Animation.Sprite sprite = state.get(currentFrame);
             final int temp = (int)(accum / 16);
-            if(sprite.frame == temp) {
+            if(sprite.frame <= temp) {
                 if((currentFrame + 1) == state.size()) {
                     currentState = sprite.jumpToStateAtEnd;
                     currentFrame = 0;
@@ -104,6 +104,7 @@ public class Character extends Node
         }
         animation.setDelta(delta);
         animThread = new Thread(animation);
+        animThread.start();
     }
     
     private void runPhysics(final double delta) {
@@ -119,6 +120,7 @@ public class Character extends Node
         }
         physics.setDelta(delta);
         physThread = new Thread(physics);
+        physThread.start();
     }
 
     public void act() {

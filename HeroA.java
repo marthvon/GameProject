@@ -55,16 +55,16 @@ public class HeroA extends Player
             spriteSheet.add(new ArrayList<Animation.Sprite>());
             
             for(int i = 1; i <= 5; ++i)
-                spriteSheet.get(IDLE).add(new Animation.Sprite(new GreenfootImage("idle" + i +".png"), 3));
+                spriteSheet.get(IDLE).add(new Animation.Sprite(new GreenfootImage("idle" + i +".png"), 6));
                 
             for(int i = 1; i <= 8; ++i)
-                spriteSheet.get(WALKING).add(new Animation.Sprite(new GreenfootImage("walking" + i +".png"), 3, 2));
+                spriteSheet.get(WALKING).add(new Animation.Sprite(new GreenfootImage("walking" + i +".png"), 5, 2));
                 
-            spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun1.png"), 7, 0));
-            spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun2.png"), 3, 0));
-            spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun3.png"), 3, 0));
-            spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun4.png"), 2, 0));
-            spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun5.png"), 1, 0));
+            spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun1.png"), 7));
+            spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun2.png"), 3));
+            spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun3.png"), 3));
+            spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun4.png"), 2));
+            spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun5.png"), 1));
             
             GreenfootImage texture = spriteSheet.get(0).get(0).sprite;
             //self.getImage().drawImage(texture, texture.getWidth(), texture.getHeight());

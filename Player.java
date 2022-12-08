@@ -49,7 +49,7 @@ public class Player extends Character
         super.act();
     }
     
-    public void updateMovementKeys() {
+    protected void updateMovementKeys() {
         input.set(
             (Greenfoot.isKeyDown(control.right)? 1 : 0)+(Greenfoot.isKeyDown(control.left)? -1 : 0), 
             (Greenfoot.isKeyDown(control.down)? 1 : 0)+(Greenfoot.isKeyDown(control.up)? -1 : 0)
@@ -57,15 +57,15 @@ public class Player extends Character
         input.normalized();
     }
     
-    public void updateCommandKeys() {
+    protected void updateCommandKeys() {
         final String key = Greenfoot.getKey();
         fire = key == null? false : key.equals(control.gun);
     }
     
-    public final Vector2 getDirectionalInput() {
+    protected final Vector2 getDirectionalInput() {
         return input;
     }
-    public final boolean isFire() {
+    protected final boolean isFire() {
         return fire;
     }
 }
