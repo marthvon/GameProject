@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=HeroA
+comment1.params=p_position\ p_scale\ p_rotation
+comment1.target=HeroA(Vector2,\ Vector2,\ double)
+comment2.params=p_position\ p_scale
+comment2.target=HeroA(Vector2,\ Vector2)
+comment3.params=p_position\ p_rotation
+comment3.target=HeroA(Vector2,\ double)
+comment4.params=p_position
+comment4.target=HeroA(Vector2)
+comment5.params=
+comment5.target=HeroA()
+numComments=6

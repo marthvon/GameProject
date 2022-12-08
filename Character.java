@@ -5,20 +5,27 @@ public class Character extends Node
 {
     private Animation animation = null;
     private Thread animThread = null;
-    private Physics physics = null;
+    protected Physics physics = null;
     private Thread physThread = null;
     
-    Character() {
-        
+    Character(final Vector2 p_position, final Vector2 p_scale, final double p_rotation) {
+        super(p_position, p_scale, p_rotation);
+    }
+    Character(final Vector2 p_position, final Vector2 p_scale) {
+        super(p_position, p_scale);
     }
     Character(final Vector2 p_position, final double p_rotation) {
-        
+        super(p_position, p_rotation);
     }
     Character(final Vector2 p_position) {
-    
+        super(p_position);
+    }
+    Character() {
+       super();
     }
     
     protected class Physics implements Runnable {
+        protected Character self;
         double delta = 0;
         public void setDelta(final double p_delta) {
             delta = p_delta;
@@ -27,7 +34,9 @@ public class Character extends Node
     }
     
     protected abstract class Animation implements Runnable {
-        double delta = 0;
+        protected Character self;
+        protected double delta = 0;
+        protected double accum = 0;
         public class Sprite {
             public GreenfootImage sprite = null;
             public int frame = 0;
@@ -46,10 +55,33 @@ public class Character extends Node
         protected ArrayList<ArrayList<Sprite>> spriteSheet = new ArrayList<ArrayList<Sprite>>();
         protected int currentFrame = 0;
         protected int currentState = 0;
-        public void setDelta(final double p_delta) {
+        
+        protected void setDelta(final double p_delta) {
             delta = p_delta;
         }
-        public void run() {}
+        public void run() {
+            accum += delta;
+            ArrayList<Animation.Sprite> state = spriteSheet.get(currentState);
+            Animation.Sprite sprite = state.get(currentFrame);
+            final int temp = (int)(accum / 16);
+            if(sprite.frame == temp) {
+                if((currentFrame + 1) == state.size()) {
+                    currentState = sprite.jumpToStateAtEnd;
+                    currentFrame = 0;
+                } else {
+                    ++currentFrame;
+                }
+                //self.getImage().clear();
+                Animation.Sprite newSprite = state.get(currentFrame);
+                /*self.getImage().drawImage(
+                    newSprite.sprite, 
+                    newSprite.sprite.getHeight(), 
+                    newSprite.sprite.getWidth()
+                );*/
+                self.setImage(newSprite.sprite);
+                accum -= temp * 16;
+            }
+        }
     }
     
     protected void setAnimation(Animation p_animation) {

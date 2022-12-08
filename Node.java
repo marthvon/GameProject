@@ -11,22 +11,69 @@ public class Node extends Actor
     
     public Node() {
         super();
+        final double rad = Math.toRadians(getRotation());
+        Vector2 basisX = (new Vector2(1, 0));
+        basisX.setRotation(rad);
+        Vector2 basisY = (new Vector2(0, 1));
+        basisY.setRotation(rad);
+        transform = new Transform(basisX, basisY, new Vector2(-1, -1));
+        update_dirty = true;
+        getImage().clear();
+    }
+    public void addedToWorld(World world) {
+        if(transform.getOrigin().x == -1)
+            transform.setOrigin(new Vector2(getX(), getY()));
+    }
+    public Node(final Vector2 p_position, final Vector2 p_scale, final double p_rotation) {
+        super();
+        Vector2 basisX = (new Vector2(p_scale.x, 0));
+        basisX.setRotation(p_rotation);
+        Vector2 basisY = (new Vector2(0, p_scale.y));
+        basisY.setRotation(p_rotation);
+        transform = new Transform(basisX, basisY, p_position);
+        update_dirty = true;
+        getImage().clear();
+    }
+    public Node(final Vector2 p_position, final Vector2 p_scale) {
+        super();
+        transform = new Transform(new Vector2(p_scale.x, 0), new Vector2(0, p_scale.y), p_position);
+        update_dirty = true;
+        getImage().clear();
     }
     public Node(final Vector2 p_position, final double p_rotation) {
         super();
+        Vector2 basisX = (new Vector2(1, 0));
+        basisX.setRotation(p_rotation);
+        Vector2 basisY = (new Vector2(0, 1));
+        basisY.setRotation(p_rotation);
+        transform = new Transform(basisX, basisY, p_position);
+        update_dirty = true;
+        getImage().clear();
     }
     public Node(final Vector2 p_position) {
         super();
+        final double rad = Math.toRadians(getRotation());
+        Vector2 basisX = (new Vector2(1, 0));
+        basisX.setRotation(rad);
+        Vector2 basisY = (new Vector2(0, 1));
+        basisY.setRotation(rad);
+        transform = new Transform(basisX, basisY, p_position);
+        update_dirty = true;
+        getImage().clear();
     }
     
     protected void finalize() {
         removeFromSceneTree();
     }
     
+    public Node getParent() {
+        return parent;
+    }
     public Transform getGlobalTransform() {
-        if(parent == null)
-            return new Transform(transform);
-        else if(update_dirty) {
+        if(parent == null) {
+            globalTransformCache = transform;
+            return new Transform(transform); 
+        } else if(update_dirty) {
             globalTransformCache = parent.getGlobalTransform().multiplied(transform);
             update_dirty = false;
         }
@@ -42,11 +89,11 @@ public class Node extends Actor
     }
     
     public void setPosition(final Vector2 pos) {
-        transform.setLocalPosition(pos);
+        transform.setOrigin(pos);
         propagateDrawUpdate();
     }
     public final Vector2 getPosition() {
-        return transform.getLocalPosition();
+        return transform.getOrigin();
     }
     public void setScale(final Vector2 scale) {
         transform.setScale(scale);
@@ -68,7 +115,6 @@ public class Node extends Actor
             child.removeFromSceneTree();
         getWorld().removeObject(this);
     }
-    
     public boolean addChildToSceneTree(final boolean propagate_child) {
         if(getWorld() == null)
             return false;
@@ -100,10 +146,15 @@ public class Node extends Actor
         if(!update_dirty)
             return;
         getGlobalTransform();
-        //setLocation;
-        //setRotation;
+        final Vector2 pos = globalTransformCache.getOrigin(); 
+        setLocation((int)pos.x, (int)pos.y);
+        setRotation(globalTransformCache.getRotation());
         update_dirty = false;
     }
+    
+    //virtual need to be overloaded
+    public void notifyCollisionTo(Node colliding, final int layer) {}
+    public void notifyCollisionFrom(Node collided, final int mask) {}
     
     public void act() {
         updateDraw();

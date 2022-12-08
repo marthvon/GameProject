@@ -9,59 +9,27 @@ public class CollisionArea extends Node
     /*this mask compares with the other layer which notifies this with collision*/
     private ArrayList<Integer> collisionMask = new ArrayList<Integer>();
     
-    //move to node
-    private Actor parent;
-    private Vector2 size;
-    private Vector2 offset;
-    
-    CollisionArea(final Actor p_parent, final Vector2 p_size, final Vector2 p_position) {
-        GreenfootImage img = getImage();
-        parent = p_parent;
-        size = p_size;
-        img.scale((int)size.x, (int)size.y);
-        offset = p_position;
-        //setLocation();
-        if(showCollisions) {
-            img.setColor(Color.RED);
-            img.drawRect(0, 0, (int)size.x, (int)size.y);
-            img.fill();
-        }
+    CollisionArea(final Vector2 p_position, final Vector2 p_scale, final double p_rotation) {
+        super(p_position, p_scale, p_rotation);
     }
-    CollisionArea(final Actor p_parent, final Vector2 p_size) {
-        GreenfootImage img = getImage();
-        size = p_size;
-        img.scale((int)size.x, (int)size.y);
-        offset = new Vector2();
-        if(showCollisions) {
-            img.setColor(Color.RED);
-            img.drawRect(0, 0, (int)size.x, (int)size.y);
-            img.fill();
-        }
+    CollisionArea(final Vector2 p_position, final Vector2 p_scale) {
+        super(p_position, p_scale);
     }
-    CollisionArea(final Actor p_parent) {
-        GreenfootImage img = getImage();
-        parent = p_parent;
-        if(showCollisions) {
-            img.setColor(Color.RED);
-            img.drawRect(0, 0, (int)size.x, (int)size.y);
-            img.fill();
-        }
+    CollisionArea(final Vector2 p_position, final double p_rotation) {
+        super(p_position, p_rotation);
+    }
+    CollisionArea(final Vector2 p_position) {
+        super(p_position);
+    }
+    CollisionArea() {
+       super();
     }
     
-    public void setLocalPosition(final Vector2 p_offset) {
-        offset = p_offset;
+    private void CollidingTo(CollisionArea area, final int layer) {
+        getParent().notifyCollisionTo(area.getParent(), layer);
     }
-    public void updatePosition() {
-        
-    }
-    private void CollidingWith(CollisionArea area, final int layer) {
-    
-    }
-    private void CollidesOn(CollisionArea area, final int mask) {
-        
-    }
-    public Actor getParentNode() {
-        return parent;
+    private void CollidedFrom(CollisionArea area, final int mask) {
+        getParent().notifyCollisionFrom(area.getParent(), mask);
     }
     
     public void toggleCollisionLayer(final int layer) {
@@ -99,10 +67,12 @@ public class CollisionArea extends Node
     }
     
     public void act() {
+        super.act();
         for(final CollisionArea area : getIntersectingObjects(CollisionArea.class)) {
             for(final Integer mask : collisionMask)
                 if (area.getCollisionLayer(mask)) {
-                    
+                    CollidingTo(area, mask);
+                    area.CollidedFrom(this, mask);
                 }
         }
     }

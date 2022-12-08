@@ -35,10 +35,10 @@ public class Transform
     public final Vector2 getBasisY() {
         return basisY;
     }
-    public void setLocalPosition(final Vector2 origin) {
+    public void setOrigin(final Vector2 origin) {
         position = origin;
     }
-    public final Vector2 getLocalPosition() {
+    public final Vector2 getOrigin() {
         return position;
     }
     //END OF SETTER AND GETTER
@@ -142,7 +142,7 @@ public class Transform
     //END
     //OPERATORS
     public Transform multiplied(final Transform other) {
-        position = transform(other.getLocalPosition());
+        position = transform(other.getOrigin());
         
         final double xx = dotX(other.getBasisX());
         final double xy = dotY(other.getBasisX());
