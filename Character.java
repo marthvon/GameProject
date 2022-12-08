@@ -71,13 +71,7 @@ public class Character extends Node
                 } else {
                     ++currentFrame;
                 }
-                //self.getImage().clear();
                 Animation.Sprite newSprite = state.get(currentFrame);
-                /*self.getImage().drawImage(
-                    newSprite.sprite, 
-                    newSprite.sprite.getHeight(), 
-                    newSprite.sprite.getWidth()
-                );*/
                 self.setImage(newSprite.sprite);
                 accum -= temp * 16;
             }

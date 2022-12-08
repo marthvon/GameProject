@@ -46,6 +46,8 @@ public class HeroA extends Player
         private final static int WALKING = 1;
         private final static int GUN = 2;
         
+        private boolean facingRight = false;
+        
         public HeroAAnimation(HeroA p_self) {
             super();
             self = p_self;
@@ -58,7 +60,7 @@ public class HeroA extends Player
                 spriteSheet.get(IDLE).add(new Animation.Sprite(new GreenfootImage("idle" + i +".png"), 6));
                 
             for(int i = 1; i <= 8; ++i)
-                spriteSheet.get(WALKING).add(new Animation.Sprite(new GreenfootImage("walking" + i +".png"), 5, 2));
+                spriteSheet.get(WALKING).add(new Animation.Sprite(new GreenfootImage("walking" + i +".png"), 5, WALKING));
                 
             spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun1.png"), 7));
             spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun2.png"), 3));
@@ -69,6 +71,28 @@ public class HeroA extends Player
             GreenfootImage texture = spriteSheet.get(0).get(0).sprite;
             //self.getImage().drawImage(texture, texture.getWidth(), texture.getHeight());
             self.setImage(texture);
+        }
+        
+        public void run() {
+            final Player player = ((Player)self); 
+            switch(currentState) {
+                case IDLE:
+                case WALKING:
+                    if(player.isFire()) {
+                        currentState = GUN;
+                        currentFrame = 0;
+                        break;
+                    }
+                    final int lastState = currentState;
+                    final boolean isLength = player.getDirectionalInput().getMagnitude() != 0;
+                    currentState = isLength? WALKING: IDLE;
+                    if(lastState != currentState)
+                        currentFrame = 0;
+                break;
+                default:
+                break;
+            }
+            super.run();
         }
     }
 }
