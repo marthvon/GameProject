@@ -2,8 +2,9 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 public class Player extends Character
 {
-    private Vector2 input = new Vector2();
-    private boolean fire = false;
+    protected final static int STATE_IDLE = 0;
+    protected final static int STATE_WALKING = 1;
+    
     private Control control = Control.DEFAULT;
     
     Player(final Vector2 p_position, final Vector2 p_scale, final double p_rotation) {
@@ -25,47 +26,52 @@ public class Player extends Character
     public static class Control {
         public Control(
             final String leftControl, final String rightControl, 
-            final String upControl, final String downControl,
-            final String gunControl
+            final String upControl, final String downControl
         ) {
-            left = leftControl;
-            right = rightControl;
-            up = upControl;
-            down = downControl;
-            gun = gunControl;
+            MOVE_LEFT = leftControl;
+            MOVE_RIGHT = rightControl;
+            MOVE_UP = upControl;
+            MOVE_DOWN = downControl;
         }
-        public String left;
-        public String right;
-        public String up;
-        public String down;
-        public String gun;
-        public static Control DEFAULT = new Control("a", "d", "w", "s", "space");
+        public Control(final Control other) {
+            MOVE_LEFT = other.MOVE_LEFT;
+            MOVE_RIGHT = other.MOVE_RIGHT;
+            MOVE_UP = other.MOVE_UP;
+            MOVE_DOWN = other.MOVE_DOWN;
+        }
+        private String MOVE_LEFT;
+        private String MOVE_RIGHT;
+        private String MOVE_UP;
+        private String MOVE_DOWN;
+        public static Control DEFAULT = new Control("a", "d", "w", "s");
+        
+        protected Vector2 input = new Vector2();
+        public final Vector2 getDirectionalInput() {
+            return input;
+        }
+        
+        public void updateKeys() {
+            input.set(
+                (Greenfoot.isKeyDown(MOVE_RIGHT)? 1 : 0)+(Greenfoot.isKeyDown(MOVE_LEFT)? -1 : 0), 
+                (Greenfoot.isKeyDown(MOVE_DOWN)? 1 : 0)+(Greenfoot.isKeyDown(MOVE_UP)? -1 : 0)
+            );
+            input.normalized();
+        }
+        //virtual function. overload this
+        public void digestInputs(Player self) {}
     };    
     
     public void act()
     {
-        updateMovementKeys();
-        updateCommandKeys();
+        control.updateKeys();
+        control.digestInputs(this);
         super.act();
     }
     
-    protected void updateMovementKeys() {
-        input.set(
-            (Greenfoot.isKeyDown(control.right)? 1 : 0)+(Greenfoot.isKeyDown(control.left)? -1 : 0), 
-            (Greenfoot.isKeyDown(control.down)? 1 : 0)+(Greenfoot.isKeyDown(control.up)? -1 : 0)
-        );
-        input.normalized();
+    public final Control getControl() {
+        return control;
     }
-    
-    protected void updateCommandKeys() {
-        final String key = Greenfoot.getKey();
-        fire = key == null? false : key.equals(control.gun);
-    }
-    
-    public final Vector2 getDirectionalInput() {
-        return input;
-    }
-    public final boolean isFire() {
-        return fire;
+    public void setControl(Control p_map) {
+        control = p_map;
     }
 }
