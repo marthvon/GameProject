@@ -23,7 +23,7 @@ public class Node extends Actor
         Vector2 basisX = (new Vector2(p_scale.x, 0));
         basisX.setRotation(p_rotation);
         Vector2 basisY = (new Vector2(0, p_scale.y));
-        basisY.setRotation(p_rotation);
+        basisY.setRotation(p_rotation + (Math.PI / 2.0));
         transform = new Transform(basisX, basisY, p_position);
         
         if(getImage() != null) {
@@ -52,7 +52,7 @@ public class Node extends Actor
         Vector2 basisX = (new Vector2(1, 0));
         basisX.setRotation(p_rotation);
         Vector2 basisY = (new Vector2(0, 1));
-        basisY.setRotation(p_rotation);
+        basisY.setRotation(p_rotation + (Math.PI / 2.0));
         transform = new Transform(basisX, basisY, p_position);
         
         if(getImage() != null) {
@@ -68,9 +68,7 @@ public class Node extends Actor
         
         final double rad = Math.toRadians(getRotation());
         Vector2 basisX = (new Vector2(1, 0));
-        basisX.setRotation(rad);
         Vector2 basisY = (new Vector2(0, 1));
-        basisY.setRotation(rad);
         transform = new Transform(basisX, basisY, p_position);
         
         if(getImage() != null) {
@@ -101,11 +99,10 @@ public class Node extends Actor
         GreenfootImage newImage = getTexture();
         final Vector2 scale = globalTransformCache.getScale();
         final double radian = globalTransformCache.getRotation();
+        
         newImage.scale( Math.abs((int)scale.x * newImage.getWidth()), Math.abs((int)scale.y * newImage.getHeight()) );
-        if(scale.y < 0)
+        if(globalTransformCache.basisDeterminant() < 0)
             newImage.mirrorVertically();
-        if(scale.x < 0)
-            newImage.mirrorHorizontally();
         newImage.rotate((int)Math.toDegrees(globalTransformCache.getRotation()));
         setImage(newImage);
         redraw_texture = false;

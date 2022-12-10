@@ -30,7 +30,9 @@ public class HeroA extends Player
     }
     
     private class HeroAPhysics extends Physics {
-        private final static double speed = 30;
+        private final static double speed = 10;
+        private final static double max_speed = 30;
+        private final static double acceleration = 10;
         public HeroAPhysics(HeroA p_self) {
             super(p_self);
         }
@@ -83,13 +85,12 @@ public class HeroA extends Player
                     currentState = isLength? WALKING: IDLE;
                     if(lastState != currentState)
                         currentFrame = 0;
-                    Vector2 scale = new Vector2(player.getLocalTransform().getScale());
-                    if( isLength &&
-                        !((scale.y > 0) ^ (input.x > 0))
+                    
+                    if( isLength && input.x != 0 &&
+                        !((player.getLocalTransform().basisDeterminant() > 0) ^ (input.x > 0))
                     ) {
-                        player.setRotation(Math.PI + player.getRotationAngle());
-                        scale.multiplied(new Vector2(1, -1));
-                        player.setScale(scale);
+                        final Vector2 scale = player.getLocalTransform().getScale();
+                        self.setScale(new Vector2(-1 * scale.x, 1 * Math.abs(scale.y)));
                     }
                 break;
                 default:
