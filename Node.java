@@ -13,14 +13,7 @@ public class Node extends Actor
     
     public Node() {
         super();
-        
-        final double rad = Math.toRadians(getRotation());
-        Vector2 basisX = (new Vector2(1, 0));
-        basisX.setRotation(rad);
-        Vector2 basisY = (new Vector2(0, 1));
-        basisY.setRotation(rad);
-        transform = new Transform(basisX, basisY, new Vector2(-1, -1));
-        
+        transform = new Transform(new Vector2(1, 0), new Vector2(0, 1), new Vector2(-1, -1));
         if(getImage() != null) 
             texture = new GreenfootImage(getImage());
     }
@@ -105,11 +98,13 @@ public class Node extends Actor
         setLocation((int)globalTransformCache.getOrigin().x, (int)globalTransformCache.getOrigin().y);
         if(texture == null)
             return;
-        GreenfootImage newImage = new GreenfootImage(texture);
+        GreenfootImage newImage = getTexture();
         final Vector2 scale = globalTransformCache.getScale();
         final double radian = globalTransformCache.getRotation();
-        newImage.scale( (int)(scale.x * newImage.getWidth()), Math.abs((int)(scale.y * newImage.getHeight())) );
+        newImage.scale( Math.abs((int)scale.x * newImage.getWidth()), Math.abs((int)scale.y * newImage.getHeight()) );
         if(scale.y < 0)
+            newImage.mirrorVertically();
+        if(scale.x < 0)
             newImage.mirrorHorizontally();
         newImage.rotate((int)Math.toDegrees(globalTransformCache.getRotation()));
         setImage(newImage);
@@ -128,12 +123,13 @@ public class Node extends Actor
         return transform;
     }
     public Transform getGlobalTransform() {
-        if(parent == null) {
-            globalTransformCache = new Transform(transform);
-            return new Transform(transform); 
-        } else if(update_dirty) {
-            globalTransformCache = parent.getGlobalTransform().multiplied(transform);
+        if(update_dirty) {
             update_dirty = false;
+            if(parent == null) {
+                globalTransformCache = new Transform(transform);
+                return new Transform(transform); 
+            }
+            globalTransformCache = parent.getGlobalTransform().multiplied(transform);
         }
         return new Transform(globalTransformCache);
     }
@@ -172,6 +168,8 @@ public class Node extends Actor
         redraw_texture = true;
     }
     public GreenfootImage getTexture() {
+        if(texture == null)
+            return null;
         return new GreenfootImage(texture);
     }
     

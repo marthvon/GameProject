@@ -32,8 +32,7 @@ public class HeroA extends Player
     private class HeroAPhysics extends Physics {
         private final static double speed = 30;
         public HeroAPhysics(HeroA p_self) {
-            super();
-            self = p_self;
+            super(p_self);
         }
         public void run() {
             
@@ -45,11 +44,9 @@ public class HeroA extends Player
         private final static int IDLE = 0;
         private final static int WALKING = 1;
         private final static int GUN = 2;
-        private boolean facingRight = false;
         
         public HeroAAnimation(HeroA p_self) {
-            super();
-            self = p_self;
+            super(p_self);
             
             spriteSheet.add(new ArrayList<Animation.Sprite>());
             spriteSheet.add(new ArrayList<Animation.Sprite>());
@@ -67,9 +64,7 @@ public class HeroA extends Player
             spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun4.png"), 2));
             spriteSheet.get(GUN).add(new Animation.Sprite(new GreenfootImage("gun5.png"), 1));
             
-            GreenfootImage texture = spriteSheet.get(0).get(0).sprite;
-            //self.getImage().drawImage(texture, texture.getWidth(), texture.getHeight());
-            self.setImage(texture);
+            self.setTexture(new GreenfootImage(spriteSheet.get(0).get(0).sprite));
         }
         
         public void run() {
@@ -83,11 +78,19 @@ public class HeroA extends Player
                         break;
                     }
                     final int lastState = currentState;
-                    final boolean isLength = player.getDirectionalInput().getMagnitude() > 0;
+                    final Vector2 input = player.getDirectionalInput();
+                    final boolean isLength = (input.getMagnitude() > 0);
                     currentState = isLength? WALKING: IDLE;
                     if(lastState != currentState)
-                        currentFrame = 0;   
-                    //if(player.);
+                        currentFrame = 0;
+                    Vector2 scale = new Vector2(player.getLocalTransform().getScale());
+                    if( isLength &&
+                        !((scale.y > 0) ^ (input.x > 0))
+                    ) {
+                        player.setRotation(Math.PI + player.getRotationAngle());
+                        scale.multiplied(new Vector2(1, -1));
+                        player.setScale(scale);
+                    }
                 break;
                 default:
                 break;

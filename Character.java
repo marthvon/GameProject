@@ -27,6 +27,9 @@ public class Character extends Node
     protected class Physics implements Runnable {
         protected Character self;
         double delta = 0;
+        public Physics(Character p_self) {
+            self = p_self;
+        }
         public void setDelta(final double p_delta) {
             delta = p_delta;
         }
@@ -37,6 +40,10 @@ public class Character extends Node
         protected Character self;
         protected double delta = 0;
         protected double accum = 0;
+        public Animation(Character p_self) {
+            self = p_self;
+        }
+        
         public class Sprite {
             public GreenfootImage sprite = null;
             public int frame = 0;
