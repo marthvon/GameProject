@@ -52,8 +52,8 @@ public class Player extends Character
         
         public void updateKeys() {
             input.set(
-                (Greenfoot.isKeyDown(MOVE_RIGHT)? 1 : 0)+(Greenfoot.isKeyDown(MOVE_LEFT)? -1 : 0), 
-                (Greenfoot.isKeyDown(MOVE_DOWN)? 1 : 0)+(Greenfoot.isKeyDown(MOVE_UP)? -1 : 0)
+                (Greenfoot.isKeyDown(MOVE_RIGHT)? 1 : 0) + (Greenfoot.isKeyDown(MOVE_LEFT)? -1 : 0), 
+                (Greenfoot.isKeyDown(MOVE_DOWN)? 1 : 0) + (Greenfoot.isKeyDown(MOVE_UP)? -1 : 0)
             );
             input.normalized();
         }

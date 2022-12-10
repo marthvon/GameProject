@@ -49,13 +49,11 @@ public class HeroA extends Player
             super(p_self);
         }
         public void run() {
-            Player player = (Player)self;
             
         }
     }
     
     private class HeroAAnimation extends Animation {
-        
         public HeroAAnimation(HeroA p_self) {
             super(p_self);
             
@@ -76,6 +74,10 @@ public class HeroA extends Player
             spriteSheet.get(STATE_ACT_GUN).add(new Animation.Sprite(new GreenfootImage("gun5.png"), 1));
             
             self.setTexture(new GreenfootImage(spriteSheet.get(0).get(0).sprite));
+        }
+        
+        public void run() {
+            super.run();
         }
     }
     
@@ -104,19 +106,19 @@ public class HeroA extends Player
             super.updateKeys();
         }
         
-        public void digestInput(Player self) {
-            switch(currentState) {
+        public void digestInputs(Player self) {
+            switch(self.currentState) {
                 case STATE_IDLE:
                 case STATE_WALKING:
                     if(fire) {
-                        currentState = STATE_ACT_GUN;
-                        currentFrame = 0;
+                        self.currentState = STATE_ACT_GUN;
+                        self.currentFrame = 0;
                         break;
                     }
-                    final int lastState = currentState;
+                    final int lastState = self.currentState;
                     final boolean isLength = (input.getMagnitude() > 0);
-                    currentState = isLength? STATE_WALKING: STATE_IDLE;
-                    if(lastState != currentState)
+                    self.currentState = isLength? STATE_WALKING: STATE_IDLE;
+                    if(lastState != self.currentState)
                         currentFrame = 0;
                     
                     if( isLength && input.x != 0 &&
@@ -125,8 +127,6 @@ public class HeroA extends Player
                         final Vector2 scale = self.getLocalTransform().getScale();
                         self.setScale(new Vector2(-1 * scale.x, 1 * Math.abs(scale.y)));
                     }
-                break;
-                default:
                 break;
             }
         }
