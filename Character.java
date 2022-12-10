@@ -72,7 +72,7 @@ public class Character extends Node
                     ++currentFrame;
                 }
                 Animation.Sprite newSprite = state.get(currentFrame);
-                self.setTexture(newSprite.sprite);
+                self.setTexture(new GreenfootImage(newSprite.sprite));
                 accum -= temp * 16;
             }
         }

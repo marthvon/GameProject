@@ -13,75 +13,102 @@ public class Node extends Actor
     
     public Node() {
         super();
+        
         final double rad = Math.toRadians(getRotation());
         Vector2 basisX = (new Vector2(1, 0));
         basisX.setRotation(rad);
         Vector2 basisY = (new Vector2(0, 1));
         basisY.setRotation(rad);
         transform = new Transform(basisX, basisY, new Vector2(-1, -1));
-        update_dirty = true;
-        texture = new GreenfootImage(getImage());
-        getImage().clear();
+        
+        if(getImage() != null) 
+            texture = new GreenfootImage(getImage());
     }
     public Node(final Vector2 p_position, final Vector2 p_scale, final double p_rotation) {
         super();
+        
         Vector2 basisX = (new Vector2(p_scale.x, 0));
         basisX.setRotation(p_rotation);
         Vector2 basisY = (new Vector2(0, p_scale.y));
         basisY.setRotation(p_rotation);
         transform = new Transform(basisX, basisY, p_position);
+        
+        if(getImage() != null) {
+            texture = new GreenfootImage(getImage());
+            getImage().clear();
+        }
+        
         update_dirty = true;
-        texture = new GreenfootImage(getImage());
-        getImage().clear();
+        redraw_texture = true;
     }
     public Node(final Vector2 p_position, final Vector2 p_scale) {
         super();
         transform = new Transform(new Vector2(p_scale.x, 0), new Vector2(0, p_scale.y), p_position);
+        
+        if(getImage() != null) {
+            texture = new GreenfootImage(getImage());
+            getImage().clear();
+        }
+        
         update_dirty = true;
-        texture = new GreenfootImage(getImage());
-        getImage().clear();
+        redraw_texture = true;
     }
     public Node(final Vector2 p_position, final double p_rotation) {
         super();
+        
         Vector2 basisX = (new Vector2(1, 0));
         basisX.setRotation(p_rotation);
         Vector2 basisY = (new Vector2(0, 1));
         basisY.setRotation(p_rotation);
         transform = new Transform(basisX, basisY, p_position);
+        
+        if(getImage() != null) {
+            texture = new GreenfootImage(getImage());
+            getImage().clear();
+        }
+        
         update_dirty = true;
-        texture = new GreenfootImage(getImage());
-        getImage().clear();
+        redraw_texture = true;
     }
     public Node(final Vector2 p_position) {
         super();
+        
         final double rad = Math.toRadians(getRotation());
         Vector2 basisX = (new Vector2(1, 0));
         basisX.setRotation(rad);
         Vector2 basisY = (new Vector2(0, 1));
         basisY.setRotation(rad);
         transform = new Transform(basisX, basisY, p_position);
+        
+        if(getImage() != null) {
+            texture = new GreenfootImage(getImage());
+            getImage().clear();
+        }
+        
         update_dirty = true;
-        texture = new GreenfootImage(getImage());
-        getImage().clear();
+        redraw_texture = true;
     }
     public void addedToWorld(World world) {
         if(transform.getOrigin().x == -1) {
-            globalTransformCache.setOrigin(new Vector2(getX(), getY()));
+            transform.setOrigin(new Vector2(getX(), getY()));
             if(parent == null)
-                transform = new Transform(globalTransformCache);
-            else;
-            
+                globalTransformCache = new Transform(transform);
+            else
+                transform = parent.getGlobalTransform().affine_invert().multiplied(transform);
             return;
         } 
+        getGlobalTransform();
         draw();
     }
     
     public void draw() {
         setLocation((int)globalTransformCache.getOrigin().x, (int)globalTransformCache.getOrigin().y);
+        if(texture == null)
+            return;
         GreenfootImage newImage = new GreenfootImage(texture);
         final Vector2 scale = globalTransformCache.getScale();
         final double radian = globalTransformCache.getRotation();
-        newImage.scale( (int)scale.x, Math.abs((int)scale.y) );
+        newImage.scale( (int)(scale.x * newImage.getWidth()), Math.abs((int)(scale.y * newImage.getHeight())) );
         if(scale.y < 0)
             newImage.mirrorHorizontally();
         newImage.rotate((int)Math.toDegrees(globalTransformCache.getRotation()));
@@ -93,8 +120,12 @@ public class Node extends Actor
         removeFromSceneTree();
     }
     
-    public Node getParent() {
+    public final Node getParent() {
         return parent;
+    }
+    
+    public final Transform getLocalTransform() {
+        return transform;
     }
     public Transform getGlobalTransform() {
         if(parent == null) {
@@ -114,7 +145,6 @@ public class Node extends Actor
             child.propagateDrawUpdate();
         }
     }
-    
     public void setPosition(final Vector2 pos) {
         transform.setOrigin(pos);
         propagateDrawUpdate();
@@ -148,7 +178,8 @@ public class Node extends Actor
     public void removeFromSceneTree() {
         for(Node child: childNodes)
             child.removeFromSceneTree();
-        getWorld().removeObject(this);
+        if(getWorld() != null)
+            getWorld().removeObject(this);
     }
     public boolean addChildToSceneTree(final boolean propagate_child) {
         if(getWorld() == null)
@@ -156,24 +187,19 @@ public class Node extends Actor
         for(Node child: childNodes) {
             if(child.getWorld() != null)
                 continue;
-            getWorld().addObject(child, 0, 0); // input transform and change this
+            getWorld().addObject(child, 0, 0);
             if(propagate_child)
                 child.addChildToSceneTree(true);
         }
         return true;
     }
     public boolean addChildToSceneTree(final int index) {
+        if(index >= childNodes.size())
+            return false;
         Node child = childNodes.get(index);
         if(child.getWorld() != null || getWorld() == null)
             return false;
-        getWorld().addObject(child, 0, 0); // input transform and change this
-        return true;
-    }
-    public boolean addChildToSceneTree(final int index, final boolean propagate_child) {
-        Node child = childNodes.get(index);
-        if(child.getWorld() != null || getWorld() == null)
-            return false;
-        getWorld().addObject(child, 0, 0); // input transform and change this
+        getWorld().addObject(child, 0, 0);
         return true;
     }
     

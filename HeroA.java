@@ -87,7 +87,7 @@ public class HeroA extends Player
                     currentState = isLength? WALKING: IDLE;
                     if(lastState != currentState)
                         currentFrame = 0;   
-                    
+                    //if(player.);
                 break;
                 default:
                 break;
