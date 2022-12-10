@@ -45,6 +45,7 @@ public class HeroA extends Player
         private final static double speed = 10;
         private final static double max_speed = 30;
         private final static double acceleration = 10;
+        private Vector2 velocity = new Vector2();
         public HeroAPhysics(HeroA p_self) {
             super(p_self);
         }
@@ -73,7 +74,7 @@ public class HeroA extends Player
             spriteSheet.get(STATE_ACT_GUN).add(new Animation.Sprite(new GreenfootImage("gun4.png"), 2));
             spriteSheet.get(STATE_ACT_GUN).add(new Animation.Sprite(new GreenfootImage("gun5.png"), 1));
             
-            self.setTexture(new GreenfootImage(spriteSheet.get(0).get(0).sprite));
+            self.setTexture(new GreenfootImage(spriteSheet.get(0).get(0).texture));
         }
         
         public void run() {

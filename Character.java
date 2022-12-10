@@ -56,63 +56,54 @@ public class Character extends Node
         protected Character self;
         protected double delta = 0;
         protected double accum = 0;
-        protected int currentState = 0;
-        protected int currentFrame = 0;
+
         public Animation(Character p_self) {
             self = p_self;
         }
         
         public class Sprite {
-            public GreenfootImage sprite = null;
+            public GreenfootImage texture = null;
             public int frame = 0;
             public int jumpToStateAtEnd = 0;
-            public Sprite(final GreenfootImage p_sprite, final int p_frame) {
-                sprite = p_sprite;
+            public Sprite(final GreenfootImage p_texture, final int p_frame) {
+                texture = p_texture;
                 frame = p_frame;
             }
-            public Sprite(final GreenfootImage p_sprite, final int p_frame, final int p_state) {
-                sprite = p_sprite;
+            public Sprite(final GreenfootImage p_texture, final int p_frame, final int p_state) {
+                texture = p_texture;
                 frame = p_frame;
                 jumpToStateAtEnd = p_state;
             }
-        };
+        };/*
+        public class StateMachine {
+            public ArrayList<Sprite> states = new ArraList<Sprite>();
+            public int jumpToStateAtEnd = 0;
+            public StateMachine() {}
+            public StateMachine(final int p_state) {
+                jumpToStateAtEnd = p_state;
+            }
+        };*/
         //spriteSheet.get(X).get(Y) wherein X is the state and Y is the frame
         protected ArrayList<ArrayList<Sprite>> spriteSheet = new ArrayList<ArrayList<Sprite>>();
+        //protected ArrayList<StateMachine> spriteSheet = new ArrayList<StateMachine>();
         
-        public void arguments(final double p_delta, final int state, final int frame) {
-            delta = p_delta;
-            currentState = state;
-            currentFrame = frame;
-        }
         protected void passDelta(final double p_delta) {
             delta = p_delta;
         }
-        public void passState(final int state) {
-            currentState = state;
-        }
-        public int returnState() {
-            return currentState;
-        }
-        public void passFrame(final int frame) {
-            currentFrame = frame;
-        }
-        public int returnFrame() {
-            return currentFrame;
-        }
         public void run() {
             accum += delta;
-            ArrayList<Animation.Sprite> state = spriteSheet.get(currentState);
-            Animation.Sprite sprite = state.get(currentFrame);
+            ArrayList<Sprite> state = spriteSheet.get(self.currentState);
+            Sprite sprite = state.get(self.currentFrame);
             final int temp = (int)(accum / 16);
             if(sprite.frame <= temp) {
-                if((currentFrame + 1) == state.size()) {
-                    currentState = sprite.jumpToStateAtEnd;
-                    currentFrame = 0;
+                if((self.currentFrame + 1) == state.size()) {
+                    self.currentState = sprite.jumpToStateAtEnd;
+                    self.currentFrame = 0;
                 } else {
-                    ++currentFrame;
+                    ++self.currentFrame;
                 }
-                Animation.Sprite newSprite = state.get(currentFrame);
-                self.setTexture(new GreenfootImage(newSprite.sprite));
+                Animation.Sprite newSprite = state.get(self.currentFrame);
+                self.setTexture(new GreenfootImage(newSprite.texture));
                 accum -= temp * 16;
             }
         }
@@ -128,7 +119,7 @@ public class Character extends Node
     private boolean runAnimation(final double delta) {
         if(animation == null)
             return false;
-        animation.arguments(delta, currentState, currentFrame);
+        animation.passDelta(delta);
         animThread = new Thread(animation);
         animThread.start();
         return true;
@@ -137,7 +128,7 @@ public class Character extends Node
     private boolean runPhysics(final double delta) {
         if(physics == null)
             return false;
-        animation.arguments(delta, currentState, currentFrame);
+        physics.arguments(delta, currentState, currentFrame);
         physThread = new Thread(physics);
         physThread.start();
         return true;
@@ -163,8 +154,8 @@ public class Character extends Node
             } catch (InterruptedException e) { 
                 e.printStackTrace();
             }
-        currentState = animation.returnState();
-        currentFrame = animation.returnFrame();
+        //currentState = animation.returnState();
+        //currentFrame = animation.returnFrame();
         super.act();
     }
 }
