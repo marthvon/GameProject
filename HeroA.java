@@ -77,37 +77,6 @@ public class HeroA extends Player
             
             self.setTexture(new GreenfootImage(spriteSheet.get(0).get(0).sprite));
         }
-        
-        //put this outside as seperater
-        public void run() {
-            final Player player = ((Player)self); 
-            switch(currentState) {
-                case STATE_IDLE:
-                case STATE_WALKING: /*
-                    if(player.isFire()) {
-                        currentState = GUN;
-                        currentFrame = 0;
-                        break;
-                    }
-                    final int lastState = currentState;
-                    final Vector2 input = player.getDirectionalInput();
-                    final boolean isLength = (input.getMagnitude() > 0);
-                    currentState = isLength? STATE_WALKING: STATE_IDLE;
-                    if(lastState != currentState)
-                        currentFrame = 0;
-                    
-                    if( isLength && input.x != 0 &&
-                        !((player.getLocalTransform().basisDeterminant() > 0) ^ (input.x > 0))
-                    ) {
-                        final Vector2 scale = player.getLocalTransform().getScale();
-                        self.setScale(new Vector2(-1 * scale.x, 1 * Math.abs(scale.y)));
-                    }*/
-                break;
-                default:
-                break;
-            }
-            super.run();
-        }
     }
     
     protected class HeroAControl extends Control {
@@ -129,13 +98,11 @@ public class HeroA extends Player
         public boolean isFire() {
             return fire;
         }
-        
         public void updateKeys() {
             final String key = Greenfoot.getKey();
             fire = key == null? false : key.equals(ACT_GUN);
             super.updateKeys();
         }
-        
         
         public void digestInput(Player self) {
             switch(currentState) {
