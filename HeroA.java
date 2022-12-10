@@ -45,7 +45,6 @@ public class HeroA extends Player
         private final static int IDLE = 0;
         private final static int WALKING = 1;
         private final static int GUN = 2;
-        
         private boolean facingRight = false;
         
         public HeroAAnimation(HeroA p_self) {
@@ -84,10 +83,11 @@ public class HeroA extends Player
                         break;
                     }
                     final int lastState = currentState;
-                    final boolean isLength = player.getDirectionalInput().getMagnitude() != 0;
+                    final boolean isLength = player.getDirectionalInput().getMagnitude() > 0;
                     currentState = isLength? WALKING: IDLE;
                     if(lastState != currentState)
-                        currentFrame = 0;
+                        currentFrame = 0;   
+                    
                 break;
                 default:
                 break;

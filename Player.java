@@ -62,10 +62,10 @@ public class Player extends Character
         fire = key == null? false : key.equals(control.gun);
     }
     
-    protected final Vector2 getDirectionalInput() {
+    public final Vector2 getDirectionalInput() {
         return input;
     }
-    protected final boolean isFire() {
+    public final boolean isFire() {
         return fire;
     }
 }

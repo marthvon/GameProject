@@ -72,7 +72,7 @@ public class Character extends Node
                     ++currentFrame;
                 }
                 Animation.Sprite newSprite = state.get(currentFrame);
-                self.setImage(newSprite.sprite);
+                self.setTexture(newSprite.sprite);
                 accum -= temp * 16;
             }
         }
@@ -85,44 +85,44 @@ public class Character extends Node
         physics = p_physics;
     }
     
-    private void runAnimation(final double delta) {
+    private boolean runAnimation(final double delta) {
         if(animation == null)
-            return;
-        if(animThread != null) {
-            try {
-                animThread.join();
-            } catch (InterruptedException e) { 
-                e.printStackTrace();
-                return;
-            }
-        }
+            return false;
         animation.setDelta(delta);
         animThread = new Thread(animation);
         animThread.start();
+        return true;
     }
     
-    private void runPhysics(final double delta) {
+    private boolean runPhysics(final double delta) {
         if(physics == null)
-            return;
-        if(physThread != null) {
-            try {
-                physThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return;
-            }
-        }
+            return false;
         physics.setDelta(delta);
         physThread = new Thread(physics);
         physThread.start();
+        return true;
     }
 
     public void act() {
         double delta = 0;
         if(getWorld() instanceof Arena)
             delta = ((Arena)getWorld()).getTimeStep();
-        runPhysics(delta);
-        runAnimation(delta);
+        final boolean successPhysicsThread = runPhysics(delta);
+        final boolean successAnimationThread = runAnimation(delta);
+        
+        if(successPhysicsThread)
+            try {
+                physThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        
+        if(successAnimationThread)
+            try {
+                animThread.join();
+            } catch (InterruptedException e) { 
+                e.printStackTrace();
+            }
         super.act();
     }
 }
